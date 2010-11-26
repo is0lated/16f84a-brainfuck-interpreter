@@ -1,0 +1,468 @@
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;######################################
+                      00002 ;#         brain fuck for pic
+                      00003 ;######################################
+                      00004 ;# Author       : Matthew King
+                      00005 ;# Date Started : 19/11/2010
+                      00006 ;######################################
+                      00007 ;# Current version: 0.1b
+                      00008 ;# Date           : 21/11/2010
+                      00009 ;# Notes:
+                      00010 ;# Not really sure how this is going to
+                      00011 ;# go, but I'll give it a shot.
+                      00012 ;# Done:
+                      00013 ;# o Software stack
+                      00014 ;# o Reading program from store (internal EEPROM for now)
+                      00015 ;# o Perform actions in code
+                      00016 ;# o Input/Output (Port B for now)
+                      00017 ;######################################
+                      00018 ;# Fixes:
+                      00019 ;#
+                      00020 ;# 0.1b:
+                      00021 ;# o Main loop is now a loop
+                      00022 ;# o Fixed movlw movwf typo in loope
+                      00023 ;# o Fixed error treating '.' as input and ',' as output
+                      00024 
+                      00025 ; RAM layout
+                      00026 ;
+                      00027 ; 0x00:
+                      00028 ;       Data at pointer
+                      00029 ; 0x02:
+                      00030 ;       Position for pointer
+                      00031 ; 0x0c:
+                      00032 ;       position for stack
+                      00033 ; 0x0d - 0x13:
+                      00034 ;       Software stack, 
+                      00035 ; 0x14 - 0x4E:
+                      00036 ;       Positions for working
+                      00037 ; 0x4F:
+                      00038 ;       Loop seek control (Find the matching ']' to the current '[')
+                      00039 
+                      00040 ; Brainfuck symbol -> interpreter symbol
+                      00041 ;        7      0
+                      00042 ; '>' -> 00000000
+                      00043 ; '<' -> 00000001
+                      00044 ; '+' -> 00000010
+                      00045 ; '-' -> 00000011
+                      00046 ; '.' -> 00000100
+                      00047 ; ',' -> 00000101
+                      00048 ; '[' -> 00000110
+                      00049 ; ']' -> 00000111
+                      00050 ;
+                      00051 
+                      00052 ;Go here for start
+0000                  00053 start:
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0000   1683           00054         bsf     03h, 5  ;Change to register 1
+0001   3000           00055         movlw   0x00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0002   0086           00056         movwf   86h             ;Set Port B to output
+0003   3001           00057         movlw   0x01
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0085           00058         movwf   85h             ;Set A0 to input
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0005   1283           00059         bcf             83h, 5  ;Change back to register 0
+0006   0189           00060         clrf    09h             ;Start at the beginning of the EEPROM
+                      00061 
+                      00062 ;Now to clear the RAM
+0007                  00063 clrram:
+0007   300C           00064         movlw   0x0C
+0008   0084           00065         movwf   04h             ;Set the hardware pointer to the beginning of user RAM
+0009                  00066 clrramloop:
+0009   0180           00067         clrf    00h             ;Clear the data at the pointer
+000A   0A84           00068         incf    04h, 1  ;Move to the next position in RAM
+000B   3050           00069         movlw   0x50
+000C   0204           00070         subwf   04h, 0  ;Subtract the last position in RAM from the current position
+000D   1D03           00071         btfss   03h, 2  ;A zero resulted if they are the same
+000E   2809           00072         goto    clrramloop ;If it wasn't zero, keep clearing RAM
+                      00073                                         ;Else continue with the program
+                      00074 
+000F   3014           00075         movlw   0x14
+0010   0084           00076         movwf   04h             ;Set the pointer to the beginning of the working space
+                      00077 
+                      00078 ;Now for the bit where everything happens
+0011                  00079 main:
+0011   2014           00080         call    getcmd  ;Get the command from the EEPROM
+0012   201D           00081         call    intcmd  ;Interperate the command
+0013   2811           00082         goto    main    ;Continue running
+                      00083 
+0014                  00084 getcmd:
+0014   3040           00085         movlw   40h             ;Move out of bounds position into wreg
+0015   0209           00086         subwf   09h, 0  ;Subtract the first out of bounds position from the position we're about to read
+0016   1903           00087         btfsc   03h, 2  ;Check to see if they matched
+0017   28B0           00088         goto    errend  ;If they did, there's an error
+                      00089         
+                      00090         ;Otherwise, continue
+0018   1683           00091         bsf             03h, 5  ;We move to bank 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0019   1408           00092         bsf             88h, 0  ;Read the command at the EEPROM address
+001A   1283           00093         bcf             03h, 5  ;Move back to bank 0
+001B   0A89           00094         incf    09h, 1  ;Move the address for next time
+001C   0008           00095         return                  ;Go back to the main loop
+                      00096 
+                      00097 
+001D                  00098 intcmd:
+001D   1D08           00099         btfss   08h, 2  ;Seperate I/0 and loop control from movement and modification
+001E   2821           00100         goto    imovmod ;Go to the movmod call command. This is done to allow room for the return
+                      00101         
+001F   2023           00102         call    ioloop  ;If the bit was set it's either I/O or loop control
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0020   0008           00103         return                  ;Return, we're done
+0021                  00104 imovmod:
+0021   208E           00105         call    movmod  ;If the bit was clear it's either movement or modification
+0022   0008           00106         return                  ;Return, we're done
+                      00107 
+                      00108 
+0023                  00109 ioloop:
+0023   1C88           00110         btfss   08h, 1  ;Seperate I/O from loop control
+0024   2827           00111         goto    iio             ;It was clear, it's I/O
+0025   2029           00112         call    loop    ;It was set, it's something to do with loop control
+0026   0008           00113         return                  ;We're done
+0027                  00114 iio:
+0027   2060           00115         call    io              ;Let's do the I/O shuffle
+0028   0008           00116         return                  ;We're done
+                      00117 
+0029                  00118 loop:   
+0029   1C08           00119         btfss   08h, 0  ;Seperate beginning of loop from end
+002A   282D           00120         goto    iloopb  ;It's clear, it's the start
+002B   202F           00121         call    loope   ;It was set, it's the end of a loop
+002C   0008           00122         return                  ;well, that's that done
+002D                  00123 iloopb:
+002D   203D           00124         call    loopb   ;It was the start of a loop
+002E   0008           00125         return                  ;All done
+                      00126 
+                      00127 
+002F                  00128 loope:
+002F   088C           00129         movf    0Ch, 1  ;Check to make sure there's a beginning for this end
+0030   1903           00130         btfsc   03h, 2  ;Check to see if the stack counter is empty
+0031   28B0           00131         goto    errend  ;If there's not, go to the error
+                      00132 
+0032   0804           00133         movf    04h, 0  ;Move the current position of the pointer into wreg
+0033   00CF           00134         movwf   4Fh             ;Place it in the loop control byte temporarily
+                      00135 
+0034   080C           00136         movf    0Ch, 0  ;Move the stack counter to wreg
+0035   3E0C           00137         addlw   0x0C    ;Add the offset of the stack counter. (counter + offset = postition of stack)
+0036   0084           00138         movwf   04h             ;Point the pointer to the stack position
+                      00139 
+0037   0800           00140         movf    00h, 0  ;Move the position stored in the stack into wreg
+0038   0089           00141         movwf   09h             ;Put the address into the next position for the program
+0039   038C           00142         decf    0Ch, 1  ;Decrement the stack counter
+                      00143 
+003A   084F           00144         movf    4Fh, 0  ;Move the temporarily stored pointer position into wreg
+003B   0084           00145         movwf   04h             ;Place it back into the pointer address
+                      00146 
+003C   0008           00147         return                  ;AAAAaaaannnnn we're done
+                      00148 
+                      00149 
+003D                  00150 loopb:
+003D   3007           00151         movlw   0x07    ;Put the final stack count into wreg    
+003E   020C           00152         subwf   0Ch, 0  ;Subtract the final stack count from the current count
+003F   1903           00153         btfsc   03h, 2  ;Check to see if the counter is already full
+0040   28B0           00154         goto    errend  ;If the zero bit was set, it was full. Go to the error
+                      00155 
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0041   0880           00156         movf    00h, 1  ;Check the byte at the pointer
+0042   1903           00157         btfsc   03h, 2  ;Check to see if it's empty
+0043   284F           00158         goto    loopbskip       ;if it's zero (empty), skip this loop
+                      00159 
+0044   0804           00160         movf    04h, 0  ;Move the pointer position into wreg
+0045   00CF           00161         movwf   4Fh             ;Store it temporarily
+                      00162 
+0046   0A8C           00163         incf    0Ch, 1  ;Increment the pointer
+0047   080C           00164         movf    0Ch, 0  ;Move the pointer offset into wreg
+0048   3E0C           00165         addlw   0x0C    ;Add the offset of the stack counter. (counter + offset = postition of stack)
+0049   0084           00166         movwf   04h             ;Put the position of the item into the pointer address
+                      00167 
+004A   0309           00168         decf    09h, 0  ;Get the current position of this instruction. (Next instruction - 1 = this inst
+                            ruction)
+004B   0080           00169         movwf   00h             ;Store the position of the current instruction at the pointer
+                      00170 
+004C   084F           00171         movf    4Fh, 0  ;Move the temporarily stored pointer position into wreg
+004D   0084           00172         movwf   04h             ;Place it back into the pointer address
+                      00173 
+004E                  00174 loopbend:
+004E   0008           00175         return
+                      00176 
+004F                  00177 loopbskip:
+004F   01CF           00178         clrf    4Fh             ;Clear the loop control byte
+Message[305]: Using default destination of 1 (file).
+0050   0ACF           00179         incf    4Fh             ;We have 1 open loop to start
+0051                  00180 lpbskiplp:              ;A loop until we find the matching ']'
+0051   2014           00181         call    getcmd  ;Get the next command
+                      00182 
+0052   3006           00183         movlw   0x06    ;Get the byte for a '['
+0053   0208           00184         subwf   08h, 0  ;Subtract the byte for '[' from the current command, store result in wreg
+0054   1903           00185         btfsc   03h, 2  ;Check to see if they matched
+0055   285B           00186         goto    newloop ;If it matched, there's another loop inside
+                      00187 
+0056   3007           00188         movlw   0x07    ;Get the byte for a ']'
+0057   0208           00189         subwf   08h, 0  ;Subtract the byte for ']' from the current command, store result in wreg
+0058   1903           00190         btfsc   03h, 2  ;Check to see if they matched
+0059   285D           00191         goto    closeloop       ;If it matched, a loop closed
+                      00192 
+005A   2851           00193         goto    lpbskiplp       ;If it didn't open or close a loop, keep going
+                      00194 
+005B                  00195 newloop:
+005B   0ACF           00196         incf    4Fh, 1  ;Increment the loop control byte
+005C   2851           00197         goto    lpbskiplp       ;Continue the loop
+                      00198 
+005D                  00199 closeloop:
+005D   0BCF           00200         decfsz  4Fh, 1  ;Decrement the loop control byte
+005E   2851           00201         goto    lpbskiplp       ;If that doesn't close the first start loop, continue looping
+005F   284E           00202         goto    loopbend        ;If it is, exit begin loop.
+                      00203 
+                      00204 
+0060                  00205 io:
+0060   1C08           00206         btfss   08h, 0  ;Check to see if it's input a byte, or output a byte
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0061   2864           00207         goto    ioutput ;If it's clear, we want to output a byte
+0062   2089           00208         call    input   ;It it's set, we want to input a byte
+0063   0008           00209         return
+0064                  00210 ioutput:
+0064   2070           00211         call    output  ;Let's output a byte
+0065   0008           00212         return
+                      00213 
+0066                  00214 btoout: ;set Port B to out
+0066   1683           00215         bsf     03h, 5  ;Change to register 1
+0067   3000           00216         movlw   0x00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0068   0086           00217         movwf   86h             ;Set Port B to output
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0069   1283           00218         bcf             83h, 5  ;Change back to register 0
+006A   0008           00219         return
+                      00220 
+006B                  00221 btoin:  ;set Port B to in
+006B   1683           00222         bsf     03h, 5  ;Change to register 1
+006C   30FF           00223         movlw   0xFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006D   0086           00224         movwf   86h             ;Set Port B to output
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006E   1283           00225         bcf             83h, 5  ;Change back to register 0
+006F   0008           00226         return
+                      00227 
+0070                  00228 output:
+0070   2066           00229         call    btoout  ;Set Port B to outputs
+0071   0800           00230         movf    00h, 0  ;Move the data at the pointer to wreg
+0072   0086           00231         movwf   06h             ;Set PortB
+0073   2076           00232         call    btnloop ;Wait for the button to be pressed and released
+0074   0186           00233         clrf    06h             ;clear PortB
+0075   0008           00234         return
+                      00235 
+                      00236 
+0076                  00237 btnloop:
+0076   30FF           00238         movlw   0xFF
+0077   00CF           00239         movwf   4Fh             ;Get ready for the delay loop
+                      00240 
+0078                  00241 waitinit:
+0078   1C05           00242         btfss   05h, 0  ;Check to see if the button has been pressed
+0079   2878           00243         goto    waitinit        ;If it isn't being held down, go back and wait
+                      00244 
+007A                  00245 btndnloop:
+007A   0BCF           00246         decfsz  4Fh, 1  ;Count down the delay
+007B   287A           00247         goto    btndnloop       ;If it's not zero, keep looping
+                      00248 
+007C   1805           00249         btfsc   05h, 0  ;Check to see if the button is still held down
+007D   2880           00250         goto    waitup  ;If it's still down, now wait for it to come up
+                      00251 
+007E   00CF           00252         movwf   4Fh             ;If it's not still held down, reset the delay (This is not needed)
+007F   2878           00253         goto    waitinit        ;Go back and wait for it to be held down again
+                      00254 
+0080                  00255 waitup:
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0080   1805           00256         btfsc   05h, 0  ;Check to see if the button has been released
+0081   2880           00257         goto    waitup
+                      00258 
+0082                  00259 btnuploop:
+0082   0FCF           00260         incfsz  4Fh, 1  ;Count up the delay
+0083   2882           00261         goto    btnuploop       ;If it's not zero, keep looping
+                      00262 
+0084   1C05           00263         btfss   05h, 0  ;Check to see if the button is still released
+0085   2888           00264         goto    btnexit ;If it's still released, go to the exit of the button loop
+                      00265 
+0086   01CF           00266         clrf    4Fh             ;If it hasn't been released, reset the delay (This is not needed)
+0087   2880           00267         goto    waitup  ;Go back and wait for it to be released
+                      00268 
+0088                  00269 btnexit:
+0088   0008           00270         return                  ;The button loop is done, let's go back
+                      00271 
+                      00272 
+0089                  00273 input:
+0089   206B           00274         call    btoin   ;Set Port B to inputs
+008A   2076           00275         call    btnloop ;Wait for the button to be pressed and released
+008B   0806           00276         movf    06h, 0  ;Move Port B into wreg
+008C   0080           00277         movwf   00h             ;Place the input at the pointer
+008D   0008           00278         return
+                      00279 
+                      00280 
+008E                  00281 movmod:
+008E   1C88           00282         btfss   08h, 1  ;Check to see if it's going to be movement or modification
+008F   2892           00283         goto    imove   ;If it's not set, it's movement
+0090   2094           00284         call    modify  ;If it's set, it's modification. Go do that
+0091   0008           00285         return                  ;Go back
+0092                  00286 imove:
+0092   209E           00287         call    move    ;let's go move the pointer
+0093   0008           00288         return                  ;Go back
+                      00289 
+                      00290 
+0094                  00291 modify:
+0094   1C08           00292         btfss   08h, 0  ;Check to see if it's up or down
+0095   2898           00293         goto    imodup  ;If the bit's clear, it's upwards
+0096   209A           00294         call    moddown ;Otherwise, go move it down
+0097   0008           00295         return                  ;Done
+0098                  00296 imodup:
+0098   209C           00297         call    modup   ;Go move it up
+0099   0008           00298         return                  ;Done
+                      00299 
+                      00300 
+009A                  00301 moddown:
+009A   0380           00302         decf    00h, 1  ;Lower the byte at the pointer by one
+009B   0008           00303         return
+                      00304 
+009C                  00305 modup:
+009C   0A80           00306         incf    00h, 1  ;Raise the byte at the pointer by one
+009D   0008           00307         return
+                      00308 
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+009E                  00309 move:
+009E   1C08           00310         btfss   08h, 0  ;Check to see if we're moving forward or backward
+009F   28A2           00311         goto    iforward        ;If it's clear, we're moving forward
+00A0   20A4           00312         call    backward        ;If it's set, we're moving backward
+00A1   0008           00313         return                          ;Go back
+00A2                  00314 iforward:
+00A2   20AA           00315         call    forward         ;Move us forward
+00A3   0008           00316         return                          ;Go back
+                      00317 
+00A4                  00318 backward:
+00A4   0384           00319         decf    04h, 1          ;Move the pointer backwards one place
+                      00320 
+00A5   3013           00321         movlw   0x13            ;Put the first position that is too low into wreg
+00A6   0204           00322         subwf   04h, 0          ;Check to see if they're the same
+00A7   1903           00323         btfsc   03h, 2          ;Check to see if the subtraction resulted in a 0
+00A8   28B0           00324         goto    errend          ;If it did, then there's a problem
+                      00325 
+00A9   0008           00326         return                          ;Otherwise, return
+                      00327 
+00AA                  00328 forward:
+00AA   0A84           00329         incf    04h, 1          ;Move the pointer forwards one place
+                      00330 
+00AB   304F           00331         movlw   0x4F            ;Put the first position that is too high into wreg
+00AC   0204           00332         subwf   04h, 0          ;Check to see if they're the same
+00AD   1903           00333         btfsc   03h, 2          ;Check to see if the subtraction resulted in a 0
+00AE   28B0           00334         goto    errend          ;If it did, then there's a problem
+                      00335 
+00AF   0008           00336         return                          ;Otherwise, return
+                      00337 
+00B0                  00338 errend:
+00B0   301E           00339         movlw   0x1E
+00B1   0085           00340         movwf   05h                     ;Set all of Port A minus the buttons to high
+                      00341 
+00B2                  00342 errloop:
+00B2   28B2           00343         goto    errloop         ;Infinite loop tiem
+                      00344 
+                      00345         end                                     ;for picky compilers
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F84A                          00000001
+__DEBUG                           1
+backward                          000000A4
+btndnloop                         0000007A
+btnexit                           00000088
+btnloop                           00000076
+btnuploop                         00000082
+btoin                             0000006B
+btoout                            00000066
+closeloop                         0000005D
+clrram                            00000007
+clrramloop                        00000009
+errend                            000000B0
+errloop                           000000B2
+forward                           000000AA
+getcmd                            00000014
+iforward                          000000A2
+iio                               00000027
+iloopb                            0000002D
+imodup                            00000098
+imove                             00000092
+imovmod                           00000021
+input                             00000089
+intcmd                            0000001D
+io                                00000060
+ioloop                            00000023
+ioutput                           00000064
+loop                              00000029
+loopb                             0000003D
+loopbend                          0000004E
+loopbskip                         0000004F
+loope                             0000002F
+lpbskiplp                         00000051
+main                              00000011
+moddown                           0000009A
+modify                            00000094
+modup                             0000009C
+move                              0000009E
+movmod                            0000008E
+newloop                           0000005B
+output                            00000070
+start                             00000000
+waitinit                          00000078
+waitup                            00000080
+MPASM  5.35                 BRAINFUCK 84A.ASM   11-21-2010  17:57:13         PAGE  9
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXX-------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   179
+Program Memory Words Free:   845
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     9 reported,     0 suppressed
+
+

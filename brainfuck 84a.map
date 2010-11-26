@@ -1,0 +1,113 @@
+MPLINK 4.35, Linker
+Linker Map File - Created Sun Nov 21 17:57:14 2010
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000166
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000b2      
+            179 out of 1093 program addresses used, program memory utilization is 16%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 backward   0x0000a4    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                btndnloop   0x00007a    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  btnexit   0x000088    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  btnloop   0x000076    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                btnuploop   0x000082    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    btoin   0x00006b    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   btoout   0x000066    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                closeloop   0x00005d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   clrram   0x000007    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+               clrramloop   0x000009    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   errend   0x0000b0    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  errloop   0x0000b2    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  forward   0x0000aa    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   getcmd   0x000014    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 iforward   0x0000a2    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                      iio   0x000027    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   iloopb   0x00002d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   imodup   0x000098    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    imove   0x000092    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  imovmod   0x000021    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    input   0x000089    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   intcmd   0x00001d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                       io   0x000060    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   ioloop   0x000023    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  ioutput   0x000064    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     loop   0x000029    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    loopb   0x00003d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 loopbend   0x00004e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                loopbskip   0x00004f    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    loope   0x00002f    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                lpbskiplp   0x000051    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     main   0x000011    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  moddown   0x00009a    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   modify   0x000094    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    modup   0x00009c    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     move   0x00009e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   movmod   0x00008e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  newloop   0x00005b    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   output   0x000070    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    start   0x000000    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 waitinit   0x000078    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   waitup   0x000080    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    start   0x000000    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   clrram   0x000007    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+               clrramloop   0x000009    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     main   0x000011    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   getcmd   0x000014    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   intcmd   0x00001d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  imovmod   0x000021    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   ioloop   0x000023    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                      iio   0x000027    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     loop   0x000029    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   iloopb   0x00002d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    loope   0x00002f    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    loopb   0x00003d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 loopbend   0x00004e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                loopbskip   0x00004f    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                lpbskiplp   0x000051    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  newloop   0x00005b    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                closeloop   0x00005d    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                       io   0x000060    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  ioutput   0x000064    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   btoout   0x000066    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    btoin   0x00006b    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   output   0x000070    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  btnloop   0x000076    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 waitinit   0x000078    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                btndnloop   0x00007a    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   waitup   0x000080    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                btnuploop   0x000082    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  btnexit   0x000088    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    input   0x000089    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   movmod   0x00008e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    imove   0x000092    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   modify   0x000094    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   imodup   0x000098    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  moddown   0x00009a    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                    modup   0x00009c    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                     move   0x00009e    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 iforward   0x0000a2    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                 backward   0x0000a4    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  forward   0x0000aa    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                   errend   0x0000b0    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+                  errloop   0x0000b2    program     static C:\Users\Matthew\Documents\pic assembly\brainfuck\brainfuck 84a.asm
+
+
