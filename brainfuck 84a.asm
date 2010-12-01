@@ -58,6 +58,8 @@ start:
 	movwf	85h		;Set A0 to input
 	bcf		83h, 5	;Change back to register 0
 	clrf	09h		;Start at the beginning of the EEPROM
+	clrf	05h		;Clear any errors displayed from last time on Port A
+	clrf	06h		;Clear the input/outputs on Port B
 
 ;Now to clear the RAM
 clrram:
