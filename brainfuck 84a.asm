@@ -21,6 +21,10 @@
 ;# o Main loop is now a loop
 ;# o Fixed movlw movwf typo in loope
 ;# o Fixed error treating '.' as input and ',' as output
+;#
+;# Note:
+;# All future fixes are in git history, this is kept purely
+;# for historical purposes.
 
 ; RAM layout
 ;
