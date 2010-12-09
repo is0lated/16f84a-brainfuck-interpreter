@@ -346,6 +346,6 @@ errend:
 	movwf	05h			;Set all of Port A minus the buttons to high
 
 errloop:
-	goto	errloop		;Infinite loop tiem
+	goto	errloop		;Infinite loop time
 
 	end					;for picky compilers
