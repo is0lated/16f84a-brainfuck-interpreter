@@ -1,0 +1,21 @@
+========================================
+Brainfuck interpreter for the PIC 16f84a
+========================================
+
+The Brainfuck interpreter is designed to allow the running of Brainfuck code on a microcontroller. This is purely for demonstration purposes only and serves no real use in real life.
+
+Brainfuck symbols to interpreter symbols:
+Brainfuck -> Interpreter
+       7      0 ( Hex  )
+'>' -> 00000000 ( 0x00 )
+'<' -> 00000001 ( 0x01 )
+'+' -> 00000010 ( 0x02 )
+'-' -> 00000011 ( 0x03 )
+'.' -> 00000100 ( 0x04 )
+',' -> 00000101 ( 0x05 )
+'[' -> 00000110 ( 0x06 )
+']' -> 00000111 ( 0x07 )
+
+Notes:
+Conrtol bits are not set in the code, instead they have been set in the MPLab project. They can also be set in most programming software when writing the code to the chip.
+It is a good idea to ensure that the Watchof timer is turned off, a WDT reset may cause unexpected results as it currently has not been coded to allow for this event.
