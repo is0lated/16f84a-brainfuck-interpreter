@@ -53,6 +53,10 @@
 ; ']' -> 00000111
 ;
 
+;Time for some includes
+	list	p=pic16f84a
+	include	p16f84a.inc
+
 ;Go here for start
 start:
 	bsf 	03h, 5	;Change to register 1
